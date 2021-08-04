@@ -1,1 +1,1 @@
-![alt text](thrift.png)
+![server started](thrift.png)
