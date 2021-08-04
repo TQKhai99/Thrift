@@ -1,1 +1,1 @@
-![server started](thrift.png)
+![server started](./thrift.png)
