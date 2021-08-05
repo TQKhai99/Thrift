@@ -141,14 +141,15 @@ public class SongServiceClient {
             TProtocol protocol = new  TBinaryProtocol(transport);
             SongService.Client client = new SongService.Client(protocol);
 
-            performStreamSong(client, 5);
-            performStreamSong(client, 1);
-            performStreamSong(client, 2);
-            performStreamSong(client, 3);
-            performStreamSong(client, 5);
-            performStreamSong(client, 4);
-            performStreamSong(client, 5);
-            performGetTop5Stream(client);
+            performLikeSong(client, 5);
+            performLikeSong(client, 1);
+            performLikeSong(client, 1);
+            performLikeSong(client, 3);
+            performLikeSong(client, 5);
+            performGetTop5Like(client);
+            performUnlikeSong(client, 1);
+            performUnlikeSong(client, 1);
+            performGetTop5Like(client);
         } catch (Exception e){
             e.printStackTrace();
         }

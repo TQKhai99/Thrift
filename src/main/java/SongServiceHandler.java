@@ -110,6 +110,14 @@ public class SongServiceHandler implements SongService.Iface{
             SongStruct song = songs.get(id);
             song.setLike(song.like - 1);
             songs.put(id, song);
+
+            int index = _search(topLike, id) + 1;
+            while(index < topLike.size() && song.like < songs.get(topLike.get(index)).like){
+                topLike.set(index - 1, topLike.get(index));
+                index += 1;
+            }
+            topLike.set(index - 1, id);
+
             return 200;
         }
         return 404;
@@ -118,14 +126,14 @@ public class SongServiceHandler implements SongService.Iface{
     @Override
     public SongResult getTop5Stream(){
         SongResult res = new SongResult(200);
-        res.setListsong(topStream);
+        res.setListsong(topStream.subList(0,5));
         return res;
     }
 
     @Override
     public SongResult getTop5Like(){
         SongResult res = new SongResult(200);
-        res.setListsong(topLike);
+        res.setListsong(topLike.subList(0,5));
         return res;
     }
 
