@@ -1,8 +1,8 @@
 import org.apache.thrift.server.TServer;
-import org.apache.thrift.server.TServer.Args;
-import org.apache.thrift.server.TSimpleServer;
-import org.apache.thrift.transport.TServerSocket;
-import org.apache.thrift.transport.TServerTransport;
+import org.apache.thrift.server.TThreadedSelectorServer;
+import org.apache.thrift.transport.*;
+
+
 
 public class SongServiceServer {
 
@@ -29,10 +29,9 @@ public class SongServiceServer {
 
     public static void simple(SongService.Processor processor) {
         try {
-            TServerTransport serverTransport = new TServerSocket(9090);
-            TServer server = new TSimpleServer(new Args(serverTransport).processor(processor));
-
-            System.out.println("Starting the simple server...");
+            TNonblockingServerSocket socket = new TNonblockingServerSocket(9090);
+            TServer server = new TThreadedSelectorServer(new TThreadedSelectorServer.Args(socket).processor(processor).selectorThreads(3).workerThreads(5));
+            System.out.println("starting the simple server...");
             server.serve();
         } catch (Exception e) {
             e.printStackTrace();

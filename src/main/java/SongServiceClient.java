@@ -3,92 +3,321 @@ import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
+import org.apache.thrift.transport.layered.TFramedTransport;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-public class SongServiceClient {
-    public static void main(String [] args) {
-        try {
-            TTransport transport;
+class RunnableWorker implements Runnable{
 
-            transport = new TSocket("localhost", 9090);
+    @Override
+    public void run() {
+        try{
+            TTransport transport = new TFramedTransport(new TSocket("localhost", 9090));
             transport.open();
 
             TProtocol protocol = new  TBinaryProtocol(transport);
             SongService.Client client = new SongService.Client(protocol);
-
-            perform(client);
-
-            transport.close();
+            System.out.println(Thread.currentThread().getName());
+            performGetTop5Like(client);
+            performLikeSong(client, 5);
         } catch (TException x) {
             x.printStackTrace();
         }
     }
 
-    private static void perform(SongService.Client client) throws TException{
-        // init data
-        client.put("ABC", new ArrayList<>(Arrays.asList("Sơn Tùng MTP")));
-        client.put("BCD", new ArrayList<>(Arrays.asList("Sơn Tùng MTP")));
-        client.put("CDE", new ArrayList<>(Arrays.asList("Sơn Tùng MTP")));
-        client.put("DEF", new ArrayList<>(Arrays.asList("Sơn Tùng MTP")));
-        client.put("EFG", new ArrayList<>(Arrays.asList("Sơn Tùng MTP")));
-        for(int i = 0; i < 5; i++){
-            for(int j = 0; j <= i + 1; j++){
-                client.stream(i);
-                client.like(4 - i);
+    public static void performGetSong(SongService.Client client, int id){
+        try{
+            SongResult res = client.get(id);
+            if(res.error == 200){
+                System.out.println(res.song);
+                return;
             }
+            System.out.println("No Result");
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
-        System.out.println("PUT SONG");
-        client.put("Nơi này có anh", new ArrayList<>(Arrays.asList("Sơn Tùng MTP")));
-        System.out.println("GET NEW SONG");
-        System.out.println(client.get(5).toString());
-        System.out.println("===================");
-
-        client.put("Chạy ngay đi!", new ArrayList<>(Arrays.asList("Sơn Tùng MTP")));
-        System.out.println("GET SONG");
-        System.out.println(client.get(6).toString());
-        System.out.println("REMOVE SONG");
-        client.remove(6);
-        System.out.println("GET SONG TO CHECK REMOVE");
-        SongStruct song = client.get(6);
-        if(song.title == null) {
-            System.out.println("Không tồn tại bài hát");
-        }
-        else {
-            System.out.println(song);
-        }
-        System.out.println("===================");
-
-        System.out.println("GET SONG TO CHECK LIKE");
-        System.out.println(client.get(5).toString());
-        System.out.println("LIKE SONG");
-        client.like(5);
-        System.out.println("GET SONG TO CHECK LIKE");
-        System.out.println(client.get(5).toString());
-        System.out.println("===================");
-
-        System.out.println("GET SONG TO CHECK UNLIKE");
-        System.out.println(client.get(5).toString());
-        System.out.println("UNLIKE");
-        client.unlike(5);
-        System.out.println("GET SONG TO CHECK UNLIKE");
-        System.out.println(client.get(5).toString());
-        System.out.println("===================");
-
-        System.out.println("GET LIST TOP 5 SONG SORT BY STREAM");
-        ArrayList<Integer> top5 = (ArrayList<Integer>) client.getTop5(true);
-        for(int i = 0; i < top5.size(); i++){
-            System.out.println(client.get(top5.get(i)).toString());
-        }
-        System.out.println("===================");
-
-        System.out.println("GET LIST TOP 5 SONG SORT BY LIKE");
-        top5 = (ArrayList<Integer>) client.getTop5(false);
-        for(int i = 0; i < top5.size(); i++){
-            System.out.println(client.get(top5.get(i)).toString());
-        }
-        System.out.println("===================");
     }
+    public static void performPutSong(SongService.Client client, String name, List<String> singers){
+        try{
+            client.put(name, singers);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void performRemoveSong(SongService.Client client, int id){
+        try{
+            int res = client.remove(id);
+            if(res == 200){
+                System.out.println("OK");
+                return;
+            }
+            System.out.println("NOT OK");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void performLikeSong(SongService.Client client, int id){
+        try{
+            int res = client.like(id);
+            if(res == 200){
+                System.out.println("OK");
+                return;
+            }
+            System.out.println("NOT OK");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void performUnlikeSong(SongService.Client client, int id){
+        try{
+            int res = client.unlike(id);
+            if(res == 200){
+                System.out.println("OK");
+                return;
+            }
+            System.out.println("NOT OK");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void performStreamSong(SongService.Client client, int id){
+        try{
+            int res = client.stream(id);
+            if(res == 200){
+                System.out.println("OK");
+                return;
+            }
+            System.out.println("NOT OK");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void performGetTop5Stream(SongService.Client client){
+        try{
+            SongResult list = client.getTop5Stream();
+            for(int i : list.listsong){
+                System.out.println(client.get(i).song);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+    public static void performGetTop5Like(SongService.Client client){
+        try{
+            SongResult list = client.getTop5Like();
+            for(int i : list.listsong){
+                System.out.println(client.get(i).song);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void performGetListSongOfArtist(SongService.Client client, String nameOfSinger){
+        try{
+            SongResult list = client.getListSongOfSinger(nameOfSinger);
+            if(list.error == 200) {
+                for (int i : list.listsong) {
+                    SongResult res = client.get(i);
+                    if(res.error == 200){
+                        System.out.println(res.song);
+                    }
+                }
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 }
+
+public class SongServiceClient {
+    public static void main(String [] args) {
+        try{
+            TTransport transport = new TFramedTransport(new TSocket("localhost", 9090));
+            transport.open();
+
+            TProtocol protocol = new  TBinaryProtocol(transport);
+            SongService.Client client = new SongService.Client(protocol);
+
+            performStreamSong(client, 5);
+            performStreamSong(client, 1);
+            performStreamSong(client, 2);
+            performStreamSong(client, 3);
+            performStreamSong(client, 5);
+            performStreamSong(client, 4);
+            performStreamSong(client, 5);
+            performGetTop5Stream(client);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+            /*Runnable r = new RunnableWorker();
+            Thread t1 = new Thread(r);
+            Thread t2 = new Thread(r);
+            Thread t3 = new Thread(r);
+
+            t1.start();
+            t2.start();
+            t3.start();*/
+
+            /*
+            // get Song
+            System.out.println("GET SONG");
+            performGetSong(client, 1);
+            System.out.println("++++++++++++++++++++++++++++++");
+            // list artist
+            System.out.println("LIST SONG OF ARTIST");
+            performGetListSongOfArtist(client, "Adele");
+            System.out.println("++++++++++++++++++++++++++++++");
+            // put Song
+            System.out.println("PUT SONG");
+            performPutSong(client, "Baby", Arrays.asList("JB"));
+            System.out.println("++++++++++++++++++++++++++++++");
+            // remove Song
+            System.out.println("REMOVE SONG");
+            performGetSong(client,5);
+            performRemoveSong(client, 5);
+            performGetSong(client,5);
+            System.out.println("++++++++++++++++++++++++++++++");
+            // like song
+            System.out.println("LIKE");
+            performLikeSong(client, 4);
+            System.out.println("++++++++++++++++++++++++++++++");
+            // unlike song
+            System.out.println("UNLIKE");
+            performUnlikeSong(client, 4);
+            System.out.println("++++++++++++++++++++++++++++++");
+            // stream song
+            System.out.println("STREAM");
+            performStreamSong(client, 4);
+            System.out.println("++++++++++++++++++++++++++++++");
+            // list top like
+            System.out.println("TOP LIKE");
+            performGetTop5Like(client);
+            System.out.println("++++++++++++++++++++++++++++++");
+
+            // list top stream
+            System.out.println("TOP STREAM");
+            performGetTop5Stream(client);
+            System.out.println("++++++++++++++++++++++++++++++");
+
+            // list artist
+            System.out.println("LIST SONG OF ARTIST");
+            performGetListSongOfArtist(client, "Adele");
+            System.out.println("++++++++++++++++++++++++++++++");
+            // list artist
+            System.out.println("LIST SONG OF ARTIST");
+            performGetListSongOfArtist(client, "BP");
+            System.out.println("++++++++++++++++++++++++++++++");
+            transport.close();*/
+    }
+
+    public static void performGetSong(SongService.Client client, int id){
+        try{
+            SongResult res = client.get(id);
+            if(res.error == 200){
+                System.out.println(res.song);
+                return;
+            }
+            System.out.println("No Result");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void performPutSong(SongService.Client client, String name, List<String> singers){
+        try{
+            client.put(name, singers);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void performRemoveSong(SongService.Client client, int id){
+        try{
+            int res = client.remove(id);
+            if(res == 200){
+                System.out.println("OK");
+                return;
+            }
+            System.out.println("NOT OK");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void performLikeSong(SongService.Client client, int id){
+        try{
+            int res = client.like(id);
+            if(res == 200){
+                System.out.println("OK");
+                return;
+            }
+            System.out.println("NOT OK");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void performUnlikeSong(SongService.Client client, int id){
+        try{
+            int res = client.unlike(id);
+            if(res == 200){
+                System.out.println("OK");
+                return;
+            }
+            System.out.println("NOT OK");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void performStreamSong(SongService.Client client, int id){
+        try{
+            int res = client.stream(id);
+            if(res == 200){
+                System.out.println("OK");
+                return;
+            }
+            System.out.println("NOT OK");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void performGetTop5Stream(SongService.Client client){
+        try{
+            SongResult list = client.getTop5Stream();
+            for(int i : list.listsong){
+                System.out.println(client.get(i).song);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+    public static void performGetTop5Like(SongService.Client client){
+        try{
+            SongResult list = client.getTop5Like();
+            for(int i : list.listsong){
+                System.out.println(client.get(i).song);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void performGetListSongOfArtist(SongService.Client client, String nameOfSinger){
+        try{
+            SongResult list = client.getListSongOfSinger(nameOfSinger);
+            if(list.error == 200) {
+                for (int i : list.listsong) {
+                    SongResult res = client.get(i);
+                    if(res.error == 200){
+                        System.out.println(res.song);
+                    }
+                }
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+}
+

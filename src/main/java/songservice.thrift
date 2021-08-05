@@ -5,15 +5,21 @@ struct SongStruct{
     4: i32 stream = 0,
     5: i32 like = 0,
 }
-
+struct SongResult{
+    1: required i32 error,
+    2: optional SongStruct song,
+    3: optional list<i32> listsong,
+}
 service SongService {
-    bool put(1: string title, 2: list<string> singers),
-    SongStruct get(1: i32 id),
-    bool remove(1: i32 id),
+    i32 put(1: string title, 2: list<string> singers),
+    SongResult get(1: i32 id),
+    i32 remove(1: i32 id),
 
-    bool stream(1: i32 id),
-    bool like(1: i32 id),
-    bool unlike(1: i32 id),
+    i32 stream(1: i32 id),
+    i32 like(1: i32 id),
+    i32 unlike(1: i32 id),
 
-    list<i32> getTop5(1: bool stream),
+    SongResult getTop5Stream(),
+    SongResult getTop5Like(),
+    SongResult getListSongOfSinger(1: string name),
 }
