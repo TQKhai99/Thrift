@@ -22,6 +22,17 @@ public class SongServiceServer {
             };
 
             new Thread(simple).start();
+            new Thread(() -> {
+                try{
+                    while(true){
+                        handler.sortTopLike();
+                        handler.sortTopStream();
+                        Thread.sleep(5000);
+                    }
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }).start();
         } catch (Exception x) {
             x.printStackTrace();
         }
@@ -31,7 +42,7 @@ public class SongServiceServer {
         try {
             TNonblockingServerSocket socket = new TNonblockingServerSocket(9090);
             TServer server = new TThreadedSelectorServer(new TThreadedSelectorServer.Args(socket).processor(processor).selectorThreads(3).workerThreads(5));
-            System.out.println("starting the simple server...");
+            System.out.println("starting the server...");
             server.serve();
         } catch (Exception e) {
             e.printStackTrace();

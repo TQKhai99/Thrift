@@ -6,20 +6,30 @@ struct SongStruct{
     5: i32 like = 0,
 }
 struct SongResult{
-    1: required i32 error,
+    1: required Error error,
     2: optional SongStruct song,
-    3: optional list<i32> listsong,
+}
+struct ListSongResult{
+    1: required Error error,
+    2: optional list<i32> listSong,
+
 }
 service SongService {
-    i32 put(1: string title, 2: list<string> singers),
+    Error put(1: string title, 2: list<string> singers),
     SongResult get(1: i32 id),
-    i32 remove(1: i32 id),
+    Error remove(1: i32 id),
 
-    i32 stream(1: i32 id),
-    i32 like(1: i32 id),
-    i32 unlike(1: i32 id),
+    Error stream(1: i32 id),
+    Error like(1: i32 id),
+    Error unlike(1: i32 id),
 
-    SongResult getTop5Stream(),
-    SongResult getTop5Like(),
-    SongResult getListSongOfSinger(1: string name),
+    ListSongResult getTopStream(1: i32 topx),
+    ListSongResult getTopLike(1: i32 topx),
+    ListSongResult getListSongOfSinger(1: string name),
+}
+
+enum Error{
+    FAIL,
+    SUCCESS,
+    INVALID_DATA
 }
