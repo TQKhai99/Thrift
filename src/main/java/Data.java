@@ -13,8 +13,7 @@ public class Data {
     private Object lockLike = new Object();
     private Object lockStream = new Object();
     private Object lockID = new Object();
-    
-    
+
     // constructor singleton
     private Data(){
         put("Hello", Arrays.asList("Adele"));
@@ -24,6 +23,7 @@ public class Data {
         put("School", Arrays.asList("Adele"));
         put("Class", Arrays.asList("Adele", "BP"));
     }
+
     public static Data getInstance(){
         return (instance == null) ? new Data() : instance;
     }
@@ -58,23 +58,26 @@ public class Data {
         res.setSong(songs.get(id));
         return res;
     }
-
     
     public Error remove(int id){
         if(!songs.containsKey(id)) {
             return Error.INVALID_DATA;
         }
-        topLike.remove(id);
-        topStream.remove(id);
-        // remove trong danh sach ca si
-        for(String i: songs.get(id).singers){
-            listSongOfArtist.get(i).remove(_search(listSongOfArtist.get(i), id));
+        topLike.remove((Object) id);
+        topStream.remove((Object) id);
+        // cap nhat list song of artist
+        for(String i : songs.get(id).singers){
+            List<Integer> list = listSongOfArtist.get(i);
+            if(list.size() == 0){
+                listSongOfArtist.remove(i);
+                continue;
+            }
+            list.remove((Object) id);
         }
         songs.remove(id);
         return Error.SUCCESS;
     }
 
-    
     public Error stream(int id){
         if(!songs.containsKey(id)) {
             return Error.INVALID_DATA;
@@ -88,7 +91,6 @@ public class Data {
 
     }
 
-    
     public Error like(int id){
         if(!songs.containsKey(id)){
             return Error.INVALID_DATA;
@@ -101,7 +103,6 @@ public class Data {
         return Error.SUCCESS;
     }
 
-    
     public Error unlike(int id){
         if(!songs.containsKey(id)){
             return Error.INVALID_DATA;
@@ -114,21 +115,18 @@ public class Data {
         return Error.SUCCESS;
     }
 
-    
     public ListSongResult getTopStream(int topX){
         ListSongResult res = new ListSongResult(Error.SUCCESS);
         res.setListSong(topStream.subList(0, (topX > topStream.size()) ? topStream.size() : topX));
         return res;
     }
 
-    
     public ListSongResult getTopLike(int topX){
         ListSongResult res = new ListSongResult(Error.SUCCESS);
         res.setListSong(topLike.subList(0, (topX > topLike.size()) ? topLike.size() : topX));
         return res;
     }
 
-    
     public ListSongResult getListSongOfSinger(String name) {
         ListSongResult res = new ListSongResult();
         if(!listSongOfArtist.containsKey(name)) {
@@ -140,38 +138,37 @@ public class Data {
         return res;
     }
 
-    public void sortTopStream(){
-        int n = topStream.size();
-        for(int i = 1; i < n; i++){
-            int key = songs.get(topStream.get(i)).stream;
-            int j = i - 1;
-            while (j >= 0 && songs.get(topStream.get(j)).stream < key){
-                topStream.set(j + 1, j);
-                j -= 1;
+    public void sortTop(int mode){
+        int n = (mode == 0) ? topLike.size() : topStream.size();
+        for(int i = 0; i < n; i++)
+            for(int j = i + 1; j < n; j++){
+                if(_check(mode, i, j)){
+                    _swap(mode, i, j);
+                }
             }
-            topStream.set(j + 1, i);
-        }
-    }
 
-    public void sortTopLike(){
-        int n = topLike.size();
-        for(int i = 1; i < n; i++){
-            int key = songs.get(topLike.get(i)).like;
-            int j = i - 1;
-            while (j >= 0 && songs.get(topLike.get(j)).like < key){
-                topLike.set(j + 1, j);
-                j -= 1;
-            }
-            topLike.set(j + 1, i);
-        }
     }
 
     // private
-
-    private int _search(List<Integer> a, int val){
-        for(int i = 0; i < a.size(); i++)
-            if(a.get(i) == val) return i;
-        return -1;
+    private void _swap(int mode, int i, int j){
+        if(mode == 0){
+            // mode = 0: like
+            int temp = topLike.get(i);
+            topLike.set(i, topLike.get(j));
+            topLike.set(j, temp);
+        }
+        else {
+            int temp = topStream.get(i);
+            topStream.set(i, topStream.get(j));
+            topStream.set(j, temp);
+        }
     }
-    
+
+    private boolean _check(int mode, int i, int j){
+        if(mode == 0){
+            // mode = 0: like
+            return songs.get(topLike.get(i)).like < songs.get(topLike.get(j)).like;
+        }
+        return songs.get(topStream.get(i)).stream < songs.get(topStream.get(j)).stream;
+    }
 }

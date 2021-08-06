@@ -56,11 +56,11 @@ public class SongServiceHandler implements SongService.Iface{
     }
 
     public void sortTopStream(){
-        data.sortTopStream();
+        data.sortTop(1);
     }
 
     public void sortTopLike(){
-        data.sortTopLike();
+        data.sortTop(0);
     }
 }
 
