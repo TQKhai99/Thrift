@@ -1,7 +1,8 @@
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TThreadedSelectorServer;
 import org.apache.thrift.transport.*;
-
+import songservice.SongService;
+import songservice.SongServiceHandler;
 
 
 public class SongServiceServer {

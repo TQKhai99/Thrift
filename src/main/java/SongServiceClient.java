@@ -3,8 +3,11 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.layered.TFramedTransport;
+import songservice.Error;
+import songservice.ListSongResult;
+import songservice.SongResult;
+import songservice.SongService;
 
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -38,27 +41,27 @@ public class SongServiceClient {
 
 
             // CHECK LIKE AND TOP LIKE
-//            for(int i = 0; i < 10; i++){
-//                TTransport transport = new TFramedTransport(new TSocket("localhost", 9090));
-//                transport.open();
-//
-//                TProtocol protocol = new  TBinaryProtocol(transport);
-//                SongService.Client client = new SongService.Client(protocol);
-//                new Thread(() -> {
-//                    for(int j =0 ;j < 10;j++){
-//                        performLikeSong(client, 1);
-//                    }
-//                }).start();
-//            }
-//
-//            TTransport transport = new TFramedTransport(new TSocket("localhost", 9090));
-//            transport.open();
-//
-//            TProtocol protocol = new  TBinaryProtocol(transport);
-//            SongService.Client client = new SongService.Client(protocol);
-//            performGetTopLike(client,5);
-//            Thread.sleep(5000);
-//            performGetTopLike(client,5);
+            for(int i = 0; i < 10; i++){
+                TTransport transport = new TFramedTransport(new TSocket("localhost", 9090));
+                transport.open();
+
+                TProtocol protocol = new  TBinaryProtocol(transport);
+                SongService.Client client = new SongService.Client(protocol);
+                new Thread(() -> {
+                    for(int j =0 ;j < 10;j++){
+                        performLikeSong(client, 1);
+                    }
+                }).start();
+            }
+
+            TTransport transport = new TFramedTransport(new TSocket("localhost", 9090));
+            transport.open();
+
+            TProtocol protocol = new  TBinaryProtocol(transport);
+            SongService.Client client = new SongService.Client(protocol);
+            performGetTopLike(client,5);
+            Thread.sleep(5000);
+            performGetTopLike(client,5);
 
 
             // CHECK PUT 100 LAN AND GET ID 105 IF EXIST => TRUE
@@ -86,18 +89,18 @@ public class SongServiceClient {
 
 
             // CHECK REMOVE AND GET LIST SONG OF ARTIST
-            TTransport transport = new TFramedTransport(new TSocket("localhost", 9090));
-            transport.open();
-
-            TProtocol protocol = new  TBinaryProtocol(transport);
-            SongService.Client client = new SongService.Client(protocol);
-
-            performRemoveSong(client,0);
-            performRemoveSong(client,1);
-            performRemoveSong(client,2);
-            performRemoveSong(client,4);
-            performRemoveSong(client,5);
-            performGetListSongOfArtist(client, "Adele");
+//            TTransport transport = new TFramedTransport(new TSocket("localhost", 9090));
+//            transport.open();
+//
+//            TProtocol protocol = new  TBinaryProtocol(transport);
+//            SongService.Client client = new SongService.Client(protocol);
+//
+//            performRemoveSong(client,0);
+//            performRemoveSong(client,1);
+//            performRemoveSong(client,2);
+//            performRemoveSong(client,4);
+//            performRemoveSong(client,5);
+//            performGetListSongOfArtist(client, "Adele");
 
 
         } catch (Exception e){
@@ -208,7 +211,6 @@ public class SongServiceClient {
                 return;
             }
             for(int i : list.listSong){
-
                 System.out.println(client.get(i).song);
             }
         } catch (Exception e){
