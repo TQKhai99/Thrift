@@ -1,12 +1,14 @@
+package com.khaitq2;
+
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.layered.TFramedTransport;
-import songservice.Error;
-import songservice.ListSongResult;
-import songservice.SongResult;
-import songservice.SongService;
+import com.khaitq2.songservice.Error;
+import com.khaitq2.songservice.ListSongResult;
+import com.khaitq2.songservice.SongResult;
+import com.khaitq2.songservice.SongService;
 
 import java.util.List;
 

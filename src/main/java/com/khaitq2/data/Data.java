@@ -1,4 +1,9 @@
-package songservice;
+package com.khaitq2.data;
+
+import com.khaitq2.songservice.Error;
+import com.khaitq2.songservice.ListSongResult;
+import com.khaitq2.songservice.SongResult;
+import com.khaitq2.songservice.SongStruct;
 
 import java.util.*;
 

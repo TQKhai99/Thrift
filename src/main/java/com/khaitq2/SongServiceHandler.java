@@ -1,8 +1,12 @@
-package songservice;
+package com.khaitq2;
+
+import com.khaitq2.data.Data;
+import com.khaitq2.songservice.*;
+import com.khaitq2.songservice.Error;
 
 import java.util.*;
 
-public class SongServiceHandler implements SongService.Iface{
+public class SongServiceHandler implements SongService.Iface {
     private Data data;
 
     public SongServiceHandler() {

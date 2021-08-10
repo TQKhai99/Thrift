@@ -1,8 +1,9 @@
+package com.khaitq2;
+
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TThreadedSelectorServer;
 import org.apache.thrift.transport.*;
-import songservice.SongService;
-import songservice.SongServiceHandler;
+import com.khaitq2.songservice.SongService;
 
 
 public class SongServiceServer {
