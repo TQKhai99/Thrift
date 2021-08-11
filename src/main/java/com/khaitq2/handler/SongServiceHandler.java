@@ -1,4 +1,4 @@
-package com.khaitq2;
+package com.khaitq2.handler;
 
 import com.khaitq2.data.Data;
 import com.khaitq2.songservice.*;
@@ -19,50 +19,50 @@ public class SongServiceHandler implements SongService.Iface {
     }
 
     @Override
-    public SongResult get(int id){
+    public SongResult get(int id) {
         return data.get(id);
     }
 
     @Override
-    public Error remove(int id){
+    public Error remove(int id) {
         return data.remove(id);
     }
 
     @Override
-    public Error stream(int id){
+    public Error stream(int id) {
         return data.stream(id);
     }
 
     @Override
-    public Error like(int id){
+    public Error like(int id) {
         return data.like(id);
     }
 
     @Override
-    public Error unlike(int id){
+    public Error unlike(int id) {
         return data.unlike(id);
     }
 
     @Override
-    public ListSongResult getTopStream(int topX){
+    public ListSongResult getTopStream(int topX) {
         return data.getTopStream(topX);
     }
 
     @Override
-    public ListSongResult getTopLike(int topX){
+    public ListSongResult getTopLike(int topX) {
         return data.getTopLike(topX);
     }
 
     @Override
-    public ListSongResult getListSongOfSinger(String name){
+    public ListSongResult getListSongOfSinger(String name) {
         return data.getListSongOfSinger(name);
     }
 
-    public void sortTopStream(){
+    public void sortTopStream() {
         data.sortTop(1);
     }
 
-    public void sortTopLike(){
+    public void sortTopLike() {
         data.sortTop(0);
     }
 }

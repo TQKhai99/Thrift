@@ -1,37 +1,35 @@
-package com.khaitq2;
+package com.khaitq2.server;
 
+import com.khaitq2.config.Config;
+import com.khaitq2.handler.SongServiceHandler;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TThreadedSelectorServer;
 import org.apache.thrift.transport.*;
-import com.khaitq2.songservice.SongService;
+import com.khaitq2.songservice.SongService.Processor;
 
 
 public class SongServiceServer {
 
     public static SongServiceHandler handler;
 
-    public static SongService.Processor processor;
+    public static Processor processor;
 
-    public static void main(String [] args) {
+    public static void main(String[] args) {
         try {
             handler = new SongServiceHandler();
-            processor = new SongService.Processor(handler);
+            processor = new Processor(handler);
 
-            Runnable simple = new Runnable() {
-                public void run() {
-                    simple(processor);
-                }
-            };
+            Runnable simple = () -> simple(processor);
 
             new Thread(simple).start();
             new Thread(() -> {
-                try{
-                    while(true){
+                try {
+                    while (true) {
                         handler.sortTopLike();
                         handler.sortTopStream();
                         Thread.sleep(5000);
                     }
-                }catch (InterruptedException e){
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }).start();
@@ -40,9 +38,9 @@ public class SongServiceServer {
         }
     }
 
-    public static void simple(SongService.Processor processor) {
+    public static void simple(Processor processor) {
         try {
-            TNonblockingServerSocket socket = new TNonblockingServerSocket(9090);
+            TNonblockingServerSocket socket = new TNonblockingServerSocket(Integer.parseInt(Config.getInstance().getConfig().get("port")));
             TServer server = new TThreadedSelectorServer(new TThreadedSelectorServer.Args(socket).processor(processor).selectorThreads(3).workerThreads(5));
             System.out.println("starting the server...");
             server.serve();

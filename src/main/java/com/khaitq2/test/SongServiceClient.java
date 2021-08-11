@@ -1,4 +1,4 @@
-package com.khaitq2;
+package com.khaitq2.test;
 
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
@@ -15,8 +15,8 @@ import java.util.List;
 
 public class SongServiceClient {
 
-    public static void main(String [] args) {
-        try{
+    public static void main(String[] args) {
+        try {
 
             // CHECK STREAM AND TOP STREAM
 //            for(int i = 0; i < 10; i++){
@@ -43,14 +43,14 @@ public class SongServiceClient {
 
 
             // CHECK LIKE AND TOP LIKE
-            for(int i = 0; i < 10; i++){
+            for (int i = 0; i < 10; i++) {
                 TTransport transport = new TFramedTransport(new TSocket("localhost", 9090));
                 transport.open();
 
-                TProtocol protocol = new  TBinaryProtocol(transport);
+                TProtocol protocol = new TBinaryProtocol(transport);
                 SongService.Client client = new SongService.Client(protocol);
                 new Thread(() -> {
-                    for(int j =0 ;j < 10;j++){
+                    for (int j = 0; j < 10; j++) {
                         performLikeSong(client, 1);
                     }
                 }).start();
@@ -59,11 +59,11 @@ public class SongServiceClient {
             TTransport transport = new TFramedTransport(new TSocket("localhost", 9090));
             transport.open();
 
-            TProtocol protocol = new  TBinaryProtocol(transport);
+            TProtocol protocol = new TBinaryProtocol(transport);
             SongService.Client client = new SongService.Client(protocol);
-            performGetTopLike(client,5);
+            performGetTopLike(client, 5);
             Thread.sleep(5000);
-            performGetTopLike(client,5);
+            performGetTopLike(client, 5);
 
 
             // CHECK PUT 100 LAN AND GET ID 105 IF EXIST => TRUE
@@ -105,117 +105,117 @@ public class SongServiceClient {
 //            performGetListSongOfArtist(client, "Adele");
 
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    public static void performGetSong(SongService.Client client, int id){
-        try{
+    public static void performGetSong(SongService.Client client, int id) {
+        try {
             SongResult res = client.get(id);
-            if(res.error.equals(Error.FAIL)){
+            if (res.error.equals(Error.FAIL)) {
                 return;
             }
             System.out.println(res.song);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void performPutSong(SongService.Client client, String name, List<String> singers){
-        try{
+    public static void performPutSong(SongService.Client client, String name, List<String> singers) {
+        try {
             client.put(name, singers);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void performRemoveSong(SongService.Client client, int id){
-        try{
+    public static void performRemoveSong(SongService.Client client, int id) {
+        try {
             Error res = client.remove(id);
-            if(res.equals(Error.SUCCESS)){
+            if (res.equals(Error.SUCCESS)) {
                 System.out.println("OK");
                 return;
             }
             System.out.println("NOT OK");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void performLikeSong(SongService.Client client, int id){
-        try{
+    public static void performLikeSong(SongService.Client client, int id) {
+        try {
             Error res = client.like(id);
-            if(res.equals(Error.SUCCESS)){
+            if (res.equals(Error.SUCCESS)) {
                 System.out.println("OK");
                 return;
             }
             System.out.println("NOT OK");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void performUnlikeSong(SongService.Client client, int id){
-        try{
+    public static void performUnlikeSong(SongService.Client client, int id) {
+        try {
             Error res = client.unlike(id);
-            if(res.equals(Error.SUCCESS)){
+            if (res.equals(Error.SUCCESS)) {
                 System.out.println("OK");
                 return;
             }
             System.out.println("NOT OK");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void performStreamSong(SongService.Client client, int id){
-        try{
+    public static void performStreamSong(SongService.Client client, int id) {
+        try {
             Error res = client.stream(id);
-            if(res.equals(Error.SUCCESS)){
+            if (res.equals(Error.SUCCESS)) {
                 System.out.println("OK");
                 return;
             }
             System.out.println("NOT OK");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void performGetTopStream(SongService.Client client, int topX){
-        try{
+    public static void performGetTopStream(SongService.Client client, int topX) {
+        try {
             ListSongResult list = client.getTopStream(topX);
-            for(int i : list.listSong){
+            for (int i : list.listSong) {
                 System.out.println(client.get(i).song);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    public static void performGetTopLike(SongService.Client client, int topX){
-        try{
+    public static void performGetTopLike(SongService.Client client, int topX) {
+        try {
             ListSongResult list = client.getTopLike(topX);
-            for(int i : list.listSong){
+            for (int i : list.listSong) {
                 System.out.println(client.get(i).song);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void performGetListSongOfArtist(SongService.Client client, String nameOfSinger){
-        try{
+    public static void performGetListSongOfArtist(SongService.Client client, String nameOfSinger) {
+        try {
             ListSongResult list = client.getListSongOfSinger(nameOfSinger);
-            if(list.error.equals(Error.FAIL)){
+            if (list.error.equals(Error.FAIL)) {
                 return;
             }
-            for(int i : list.listSong){
+            for (int i : list.listSong) {
                 System.out.println(client.get(i).song);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
