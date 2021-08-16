@@ -164,6 +164,15 @@ public class Data {
 
     }
 
+    public Error edit(int id, String title){
+        if (!songs.containsKey(id)) {
+            return Error.INVALID_DATA;
+        }
+        SongStruct song = songs.get(id);
+        song.setTitle(title);
+        return Error.SUCCESS;
+    }
+
     // private
     private void _swap(int mode, int i, int j) {
         if (mode == 0) {

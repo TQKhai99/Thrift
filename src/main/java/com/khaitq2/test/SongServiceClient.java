@@ -43,27 +43,15 @@ public class SongServiceClient {
 
 
             // CHECK LIKE AND TOP LIKE
-            for (int i = 0; i < 10; i++) {
-                TTransport transport = new TFramedTransport(new TSocket("localhost", 9090));
-                transport.open();
-
-                TProtocol protocol = new TBinaryProtocol(transport);
-                SongService.Client client = new SongService.Client(protocol);
-                new Thread(() -> {
-                    for (int j = 0; j < 10; j++) {
-                        performLikeSong(client, 1);
-                    }
-                }).start();
-            }
 
             TTransport transport = new TFramedTransport(new TSocket("localhost", 9090));
             transport.open();
 
             TProtocol protocol = new TBinaryProtocol(transport);
             SongService.Client client = new SongService.Client(protocol);
-            performGetTopLike(client, 5);
-            Thread.sleep(5000);
-            performGetTopLike(client, 5);
+
+            client.edit(1,"12346");
+            System.out.print(client.get(1));
 
 
             // CHECK PUT 100 LAN AND GET ID 105 IF EXIST => TRUE

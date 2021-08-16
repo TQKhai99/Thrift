@@ -3,6 +3,7 @@ package com.khaitq2.handler;
 import com.khaitq2.data.Data;
 import com.khaitq2.songservice.*;
 import com.khaitq2.songservice.Error;
+import org.apache.thrift.TException;
 
 import java.util.*;
 
@@ -56,6 +57,11 @@ public class SongServiceHandler implements SongService.Iface {
     @Override
     public ListSongResult getListSongOfSinger(String name) {
         return data.getListSongOfSinger(name);
+    }
+
+    @Override
+    public Error edit(int id, String title) {
+        return data.edit(id, title);
     }
 
     public void sortTopStream() {

@@ -13,7 +13,6 @@ struct SongResult{
 struct ListSongResult{
     1: required Error error,
     2: optional list<i32> listSong,
-
 }
 service SongService {
     Error put(1: string title, 2: list<string> singers),
@@ -27,6 +26,8 @@ service SongService {
     ListSongResult getTopStream(1: i32 topx),
     ListSongResult getTopLike(1: i32 topx),
     ListSongResult getListSongOfSinger(1: string name),
+
+    Error edit(1: i32 id, 2: string title),
 }
 
 enum Error{
